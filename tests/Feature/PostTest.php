@@ -18,7 +18,6 @@ class PostTest extends TestCase
     public function stores_post()
     {
         $user = create('App\User');
-        $this->actingAs($user, 'api');
 
         $data = [
             'title' => $this->faker->sentence(6, true),
@@ -50,7 +49,6 @@ class PostTest extends TestCase
      */
     public function delete_post(){
         $user = create('App\User');
-        $this->actingAs($user, 'api');
 
         // No es necesario enviar el usuario, ya que sólo habrá 1, y en el factory especificamos que tome uno random, al haber uno solo tomará al usuario que estamos usando
         $post = create('App\Models\Post');
@@ -73,7 +71,6 @@ class PostTest extends TestCase
         ];
 
         $user = create('App\User');
-        $this->actingAs($user, 'api');
 
         // No es necesario enviar el usuario, ya que sólo habrá 1, y en el factory especificamos que tome uno random, al haber uno solo tomará al usuario que estamos usando
         $post = create('App\Models\Post');

@@ -21,7 +21,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group([
     "prefix" => "v1",
     "namespace" => "Api\V1",
-    //"middleware" => ["auth:api"]
+    "middleware" => ["auth:api"]
 ], function(){
-    Route::apiResource('posts', 'PostController');
+    Route::apiResources([
+        'users' => 'UserController',
+        'posts' => 'PostController'
+    ]);
 });
+
+Route::post('login', 'Api\AuthController@login');
+Route::post('signup', 'Api\AuthController@signup');
