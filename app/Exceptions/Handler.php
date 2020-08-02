@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -40,6 +41,19 @@ class Handler extends ExceptionHandler
     }
 
     /**
+     * Manejo de errores de API
+     * 
+     * En caso de que no se trate de un error contemplado, retornará el estándar de Laravel
+     */
+    public function handleApiExceptions($request, $exception){
+        if($exception instanceof ModelNotFoundException){
+            return response()->json(['error' => 'Model Not Found'], 404);
+        }
+
+        return parent::render($request, $exception);
+    }
+
+    /**
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -50,6 +64,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if($request->expectsJson()){
+            // Se trata de una petición a la API (el encabezado debe aceptar application/json)
+            return $this->handleApiExceptions($request, $exception);
+        }
+
         return parent::render($request, $exception);
     }
 }

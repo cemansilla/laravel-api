@@ -62,4 +62,49 @@ class PostTest extends TestCase
         // Testeo si efectivamente ya no existe
         $this->assertNull(Post::find($post->id));
     }
+
+    /**
+     * @test
+     */
+    public function update_post(){
+        $data = [
+            'title' => $this->faker->sentence(6, true),
+            'content' => $this->faker->text(40)
+        ];
+
+        $user = create('App\User');
+        $this->actingAs($user, 'api');
+
+        // No es necesario enviar el usuario, ya que sólo habrá 1, y en el factory especificamos que tome uno random, al haber uno solo tomará al usuario que estamos usando
+        $post = create('App\Models\Post');
+
+        // Testeo acción de actualización
+        $response = $this->json('PUT', $this->base_url . "posts/{$post->id}", $data);
+        $response->assertStatus(200);
+
+        // Testeo si la data actualizada corresponde al post
+        $post = $post->fresh();
+
+        // Testeo si efectivamente ya no existe
+        $this->assertEquals($post->title, $data['title']);
+        $this->assertEquals($post->content, $data['content']);
+    }
+
+    /**
+     * @test
+     */
+    public function show_post(){
+        $user = create('App\User');
+        $post = create('App\Models\Post');
+
+        $response = $this->json('GET', $this->base_url . "posts/{$post->id}");
+        $response->assertStatus(200);
+
+        $response->assertJson([
+            'data' => [
+                'id' => $post->id,
+                'title' => $post->title
+            ]
+        ]);
+    }
 }
