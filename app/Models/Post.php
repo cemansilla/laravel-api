@@ -22,4 +22,14 @@ class Post extends Model
     public function author(){
         return $this->belongsTo('App\User', 'author_id');
     }
+
+    /**
+     * Métodos auxiliares para utilizar junto al mergeWhen en el PostResource
+     */
+    public function isAuthorLoaded(){
+        return $this->relationLoaded('author');
+    }
+    public function isCommentsLoaded(){
+        return $this->relationLoaded('comments');
+    }
 }

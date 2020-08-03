@@ -20,7 +20,10 @@ class PostController extends Controller
     public function index()
     {
         //return new PostCollection(Post::all());
-        return new PostCollection(Post::paginate(1));
+        //return new PostCollection(Post::paginate(1));
+        
+        // Uso del método with para que retorne el recurso con sus relaciones
+        return new PostCollection(Post::with(['author', 'comments'])->paginate(1));
     }
 
     /**
@@ -31,9 +34,14 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
+        // Elimino el contenedor data
+        PostResource::withoutWrapping();
+
         $post = Post::create($request->all());
 
-        return response()->json(['data' => $post], 201);
+        return (new PostResource($post))
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**

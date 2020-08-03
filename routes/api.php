@@ -25,8 +25,16 @@ Route::group([
 ], function(){
     Route::apiResources([
         'users' => 'UserController',
-        'posts' => 'PostController'
+        'posts' => 'PostController',
+        'comments' => 'CommentController',
     ]);
+
+    // Relaciones author / comments
+    // Esto que parece duplicado es para retornar las estructuras de la especificación JSON API
+    Route::get('/posts/{post}/relationships/author', 'PostRelationshipController@author')->name('posts.relationships.author');
+    Route::get('/posts/{post}/author', 'PostRelationshipController@author')->name('posts.author');
+    Route::get('/posts/{post}/relationships/comments', 'PostRelationshipController@comments')->name('posts.relationships.comments');
+    Route::get('/posts/{post}/comments', 'PostRelationshipController@comments')->name('posts.comments');
 });
 
 Route::post('login', 'Api\AuthController@login');

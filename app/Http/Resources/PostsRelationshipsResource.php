@@ -17,13 +17,14 @@ class PostsRelationshipsResource extends JsonResource
         return [
             'author' => [
                 'links' => [
-                    'self' => '',
-                    'related' => ''
+                    'self' => route('posts.relationships.author', ['post' => $this->id]),
+                    'related' => route('posts.author', ['post' => $this->id])
                 ],
                 'data' => new AuthorIdentifierResource($this->author) // Referencia definida en el model
             ],
             // Los comentarios son de tipo collection, ya que pueden ser varios
-            'comments' => new PostCommentsRelationshipCollection($this->comments)
+            // Aditional permite pasar parámetros adicionales al recurso, en este caso es necesario ya que estoy trabajando con una colección y necesito hacer referencia a cada post
+            'comments' => (new PostCommentsRelationshipCollection($this->comments))->additional(['post' => $this])
         ];
     }
 }

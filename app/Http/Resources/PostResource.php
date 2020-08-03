@@ -25,15 +25,23 @@ class PostResource extends JsonResource
                 'title' => $this->title
             ],
 
+            /*
             // Ejemplo de retorno condicional
             $this->mergeWhen($user->isAdmin(), [
                 'created' => $this->created_at
             ]),
+            */
+
+            // Condicional de retorno de relaciones
+            // En el método show, o en el detalle de post no se ven las relaciones
+            // En el listado si, por eso en el PostController se solicita esto
+            $this->mergeWhen(($this->isAuthorLoaded() && $this->isCommentsLoaded()), [
+                'relationships' => new PostsRelationshipsResource($this)
+            ]),
 
             'links' => [
                 'self' => route('posts.show', ['post' => $this->id])
-            ],
-            'relationships' => new PostsRelationshipsResource($this)
+            ]
         ];
     }
 }
