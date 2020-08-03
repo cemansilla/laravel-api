@@ -7,6 +7,9 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 
+use App\Http\Resources\PostResource;
+use App\Http\Resources\PostCollection;
+
 class PostController extends Controller
 {
     /**
@@ -16,7 +19,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        //return new PostCollection(Post::all());
+        return new PostCollection(Post::paginate(1));
     }
 
     /**
@@ -40,7 +44,11 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return response()->json(['data' => $post], 200);
+        // Elimino el contenedor data
+        PostResource::withoutWrapping();
+        return new PostResource($post);
+        // Forma anterior a la implementación de los resources
+        //return response()->json(['data' => $post], 200);
     }
 
     /**

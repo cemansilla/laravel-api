@@ -16,10 +16,10 @@ class Post extends Model
     ];
 
     public function comments(){
-        $this->hasMany('App\Models\Comment');
+        return $this->hasMany('App\Models\Comment');
     }
 
     public function author(){
-        $this->belongTo('App\User', 'author_id');
+        return $this->belongsTo('App\User', 'author_id');
     }
 }
